@@ -1,0 +1,6 @@
+node_modules
+/prisma/client
+/next-env.d.ts
+/.next
+/.env
+/.env-*

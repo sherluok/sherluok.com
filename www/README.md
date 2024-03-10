@@ -1,0 +1,21 @@
+## References
+
+- [NextJS](https://nextjs.org/)
+  - [Install](https://nextjs.org/docs/getting-started/installation#manual-installation)
+  - [Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata)
+  - [Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
+  - [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+- [NextAuth]()
+  - https://next-auth.js.org/deployment#vercel
+  - https://generate-secret.vercel.app/32
+  - https://next-auth.js.org/configuration/initialization#route-handlers-app
+  - https://next-auth.js.org/providers/github
+  - https://github.com/settings/developers
+  - [Adapters](https://authjs.dev/reference/adapter/prisma)
+  - [Callbacks](https://next-auth.js.org/configuration/callbacks)
+  - [Vercel Prisma Envs](https://vercel.com/docs/storage/vercel-postgres/using-an-orm#prisma)
+- [MDX]
+  - https://nextjs.org/docs/app/building-your-application/configuring/mdx
+  - [Remote Source](https://nextjs.org/docs/app/building-your-application/configuring/mdx#remote-mdx)
+  - [Rehype Pretty Code](https://rehype-pretty-code.netlify.app/#installation)
+  - [Extending MDX](https://mdxjs.com/docs/extending-mdx/)
