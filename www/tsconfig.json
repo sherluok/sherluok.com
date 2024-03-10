@@ -3,7 +3,6 @@
   "include": [
     "./src/**/*",
     "./next-env.d.ts",
-    "./prisma/client/**/*",
     ".next/types/**/*.ts",
   ],
   "exclude": [
