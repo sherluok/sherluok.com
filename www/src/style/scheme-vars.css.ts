@@ -1,23 +1,13 @@
 import { createVar } from '@vanilla-extract/css';
 
-// export const [lightSchemeClassName, schemeVars] = createTheme({
-//   defaultBackground: `hsl(220 5% 4%)`,
-//   hoverBackground: `hsl(220 5% 12%)`,
-
-//   primaryForeground: `hsl(220 5% 80%)`,
-//   secondaryForeground: `hsl(220 5% 60%)`,
-//   placeholderForeground: `hsl(220 5% 40%)`,
-
-//   defaultBorderColor: `hsl(220 5% 16%)`,
-// });
-
 export const brightBackground = createVar();
 export const defaultBackground = createVar();
+export const editorBackground = createVar();
 export const hoverBackground = createVar();
 
-export const primaryForeground = createVar();
-export const secondaryForeground = createVar();
-export const placeholderForeground = createVar();
+export const primaryTextColor = createVar();
+export const secondaryTextColor = createVar();
+export const placeholderTextColor = createVar();
 
 export const defaultBorderColor = createVar();
 
@@ -26,6 +16,11 @@ export const defaultBorderColor = createVar();
 export const linkColor = createVar();
 export const linkHoverColor = createVar();
 export const linkPressColor = createVar();
+
+// Selection
+
+export const selectionTextColor = createVar();
+export const selectionBackground = createVar();
 
 // Button
 
@@ -44,3 +39,11 @@ export const secondaryButtonForeground = createVar();
 export const secondaryButtonHoverForeground = createVar();
 export const secondaryButtonPressForeground = createVar();
 export const secondaryButtonBorderColor = createVar();
+
+// Markdown
+export const inlineCodeBackground = createVar();
+export const inlineCodeBorderColor = createVar();
+export const blockCodeBackground = createVar();
+export const blockCodeBorderColor = createVar();
+export const highlightedCodeLineBackground = createVar();
+export const highlightedCodeCharBackground = createVar();

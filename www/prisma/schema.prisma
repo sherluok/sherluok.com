@@ -50,6 +50,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
+  blobs         Blob[]
 }
 
 model VerificationToken {
@@ -109,4 +110,17 @@ model Post {
   prevPostId           String?   @unique
   prevPost             Post?     @relation("series", fields: [prevPostId], references: [id])
   nextPost             Post?     @relation("series")
+}
+
+model Blob {
+  id                 String   @id @default(cuid())
+  url                String
+  downloadUrl        String
+  pathname           String
+  contentType        String
+  contentDisposition String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  uploadedByUserId   String
+  uploadedBy         User     @relation(fields: [uploadedByUserId], references: [id])
 }

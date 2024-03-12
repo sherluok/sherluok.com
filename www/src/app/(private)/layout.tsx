@@ -1,17 +1,18 @@
-import { useSession } from '^/lib/auth';
+import { getSessionUser } from '^/lib/server/auth';
 import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
 export default async function PrivateRootLayout(props: PropsWithChildren) {
-  const session = await useSession();
+  const user = await getSessionUser();
 
-  if (!session) {
-    throw notFound();
+  if (!user) {
+    return notFound();
   }
 
-  return (
-    <body>
-      {props.children}
-    </body>
-  );
+  // Only allow admin user, might remove later
+  if (user.email !== 'sherluok@126.com') {
+    return notFound();
+  }
+
+  return <>{props.children}</>;
 }

@@ -1,6 +1,7 @@
 // https://vercel.com/guides/nextjs-prisma-postgres
 
-import { PrismaClient } from '../../prisma/client';
+import { PrismaClient } from '../../../prisma/client';
+export * from '../../../prisma/client';
 
 let prisma: PrismaClient;
 

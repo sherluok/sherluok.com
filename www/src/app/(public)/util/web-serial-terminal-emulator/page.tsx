@@ -1,9 +1,9 @@
 import * as s from './page.css';
 
-export default function DashboardPage() {
+export default function Page() {
   return (
     <div className={s.container}>
-      This is dashboard / index page
+      <h1>Web Serial Terminal Emulator</h1>
     </div>
   );
 }
