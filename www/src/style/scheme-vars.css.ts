@@ -41,6 +41,7 @@ export const secondaryButtonPressForeground = createVar();
 export const secondaryButtonBorderColor = createVar();
 
 // Markdown
+export const inlineCodeTextColor = createVar();
 export const inlineCodeBackground = createVar();
 export const inlineCodeBorderColor = createVar();
 export const blockCodeBackground = createVar();

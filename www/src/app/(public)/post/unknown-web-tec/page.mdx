@@ -1,0 +1,252 @@
+# 网页技术回忆录
+
+一个 Web 开发者最纯粹的乐趣不过是尝试使用各种新技术实现以前不敢想象的功能或效果，但当你兴奋地准备大展身手时，面试官却问你 var 的四种写法。哪怕是研究怎么吃屎的公司，也会考察你造火箭的能力，我想应该是因为这些面试官连怎么吃屎都没研究明白，只好有样学样地照着书上的问题问罢了。可惜想要混口饭吃，就不得不面对遍地的孔乙己。这篇文章囊括了 Web 技术中你会用上的和不会用上的大多数知识，大概能帮助你混口饭吃。夸张点说你看完最后就会进化成一个浏览器引擎，在大脑里疯狂地编译运行代码，变成人形 Chrome。
+
+<details open>
+<summary>目录</summary>
+- [ECMAScript](#ECMAScript)
+  - 语句和声明
+  - 作用域和提升
+  - 原型和构造函数
+  - 数据类型和转换
+  - 引用和垃圾回收
+  - 内置对象
+  - 事件循环
+  - 严格模式
+  - 预处理
+  - 模块
+  - 安全
+- HTML
+  - 安全
+- CSS
+  - 选择器语法和类型
+  - 选择器优先级算法
+  - 属性和值
+  - 盒模型
+  - 预处理
+  - 安全
+- DOM
+  - 语义化元素
+  - 操作方法
+  - 性能优化
+  - 重绘和重排
+- HTTP
+  - 请求方法
+  - 响应状态码
+  - 跨域
+  - 安全
+- Web API
+  - MutationObserver
+  - IntersectionObserver
+  - requestAnimationFrame
+  - 安全
+- Chrome Devtools
+  - Chrome Devtools Protocol
+  - 调试代码
+  - 检查内存
+  - 优化指标
+</details>
+
+## ECMAScript
+
+通常我们讲的 "JavaScript" 是指在某个宿主环境中的 ECMAScript 语言标准加上宿主环境提供的 API。宿主环境可以是浏览器、NodeJS、QuickJS 等等，它们使用相同的 ECMAScript 语言标准，但提供不同的宿主环境 API。也就是说你的代码语法是一样的，但在不同环境下能够调用的 API 是不一样的，例如 NodeJS 中没有 `window` 对象，取而代之的是 `process` 对象，两者提供的属性不一样。这部分的内容只讨论 ECMAScript 标准包含的内容，浏览器宿主环境提供的 API 会单独在 [DOM]() 章节和 [Web API]() 章节讨论。
+
+有时候你编写的 JS 代码运行起来会有意想不到的奇怪行为，这是由于 JS 引擎对代码的理解和其它语言的一般经验不太一样。例如在 C 语言中，通常变量必须先声明再使用，而 JS 有提升机制；通常每个代码块 `{}` 形成一个块级作用域，而 `var` 仅被函数创建局部作用域。通常不同类型的数据必须手动转换为相同数据类型才能进行相加、相减、比较等操作，而 JS 有隐式类型转换机制；通常函数中声明的变量仅存在于函数的执行期间，而 JS 的引用机制包括了函数作用域，形成了闭包现象。
+
+## 语句和声明
+
+在讨论上述古怪的现象之前，首先
+
+## 作用域和提升
+
+```js
+console.log('a:', a); // undefined
+console.log('h:', h); // f h() {}
+console.log('g:', g); // undefined
+console.log('f:', f); // f f(x) {...}
+
+var a = 1;
+
+console.log('a:', a); // 1
+
+var a;
+
+console.log('a:', a); // 1
+
+var h = 1;
+
+function h() {}
+
+console.log('h:', h); // 1
+
+{
+  function g() {}
+}
+
+f(1);
+
+console.log('b:', b); // 1
+console.log('c:', c); // ReferenceError: c is not defined
+
+function f(x) {
+  console.log('x:', x); // f x() {}
+  function x() {}
+
+  console.log('s:', s); // undefined
+  c = 1;
+  b = 1;
+  if (true) {
+    var c = 2;
+    function s() {
+    }
+  }
+  console.log('c:', c); // 2
+};
+```
+
+引擎这样理解上面的代码：
+- 仅函数体会对 `var`、`function` 声明形成新的作用域，而所有块语句都会对 `let`、`const`、`class` 声明形成新的作用域。
+- `var`、`function`、`let`、`const`、`class` 声明会提升到自己所在作用域的顶部。
+- 顶层 `function` 声明的初始化过程也会被提升，而块语句中的不会。
+- 尚未初始化的 `var`、`function` 取值会得到 `undefined`。
+- 尚未初始化的 `let`、`const`、`class` 取值会导致 `ReferenceError` 错误，这叫暂时性死区。
+
+```js
+// ⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄
+// ------------提升区域-----------
+
+var a;
+var h;
+var g;
+var f;
+
+// 脚本顶层function声明会同时提升函数体，而块语句中的不会
+h = function () {};
+
+f = function (x) {
+  // ⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄
+  // var声明和function声明无视块级作用域，仅被函数体创建作用域，所以if、for等块语句中的var声明会被提升到函数体顶部。
+  var x;
+  var c;
+  var s;
+  // 传参时隐含的初始化赋值操作比function声明函数体提升的优先级更高
+  x = 1;
+  // 函数体顶层的function声明会同时提升函数体，而块语句中的不会
+  x = function () {};
+  // ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
+  console.log(x); // f x() {}
+  console.log(s); // undefined
+  c = 1;
+  if (true) {
+    // 对一个标志符赋值时，如果本地作用域找不到该标志则会向上继续查找，直到全局作用域；
+    // 如果全局作用域上依然找不到则会在全局作用域中声明该标志，造成全局变量污染（而在严格模式下，会抛出 ReferenceError）。
+    b = 2;
+    c = 2;
+    s = function () {
+    }
+  }
+  console.log(c); // 2
+};
+
+// ⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃⌃
+
+// 尚未赋值的 var 变量取值得到的是 undefined
+console.log('a:', a); // undefined
+console.log('h:', h); // f h() {}
+console.log('g:', g); // undefined
+console.log('f:', f); // f f(x) {...}
+
+a = 1;
+
+console.log('a:', a); // 1
+
+// 重复的 var 声明会被直接忽略
+
+console.log('a:', a); // 1
+
+h = 1;
+
+console.log('h:', h); // 1
+
+{
+  // 块内的function声明不会提升函数体（safari除外，在safari中，即使是 if(false) 这样不会被执行的块语句其内部的函数体也会被提升）
+  g = function () {}
+}
+
+f(1);
+
+console.log('b:', b); // 2
+
+// 对一个标志符取值时，如果本地作用域找不到该标志则会向上继续查找，直到全局作用域；
+// 如果全局作用域上依然找不到，则抛出 ReferenceError。
+console.log('c:', c);  // ReferenceError: c is not defined
+```
+
+注意：
+- 在 `catch` 块内部，`function` 声明的标志不能与 `catch` 绑定的标志相同。
+- 在严格模式下，块语句中的 `function` 声明所属作用域为块级作用域。（`var` 依然是函数作用域）
+- 在模块顶层或严格模式下的块语句中，`function` 声明不能被其它任何声明重新声明。（在函数顶层依然可以）
+
+参考资料
+- `var` 声明<sup>[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/var)</sup>
+- `function` 声明<sup>[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/function)</sup>
+
+**提升**<sup>[MDN](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting)</sup> 描述了引擎如何预处理代码。`funciton{:.keyword}`、`var{:.keyword}`、`let{:.keyword}`、`const{:.keyword}`、`class{:.keyword}`、`import{:.keyword}` 声明都会被提升。`function{:.keyword}` 提升具有最高优先级，且同时提升函数体；其它类型声明仅提升声明，而不提升赋值。`funciton{:.keyword}` 和 `var{:.keyword}` 可以在同一作用域下重复声明，而其它类型不行。`var{:.keyword}` 可以在赋值前取值得到 `undefined{:.constant}`，而其它类型不行。
+
+**作用域**<sup>[MDN](https://developer.mozilla.org/en-US/docs/Glossary/Scope)</sup> 描述了引擎查找一个标志对应声明和值的过程。引擎对代码中出现的标志，按照由内向外一层一层的顺序进行查找。每一层都是一个作用域，对于 `var{:.keyword}` 和 `let{:.keyword}` 来说，它们形成的作用域是不同的。`var{:.keyword}` 仅被函数体创建作用域，而 `let{:.keyword}` 被任何块语句创建作用域。作用域的查找在最外层停止，如果一个是取值操作，找不到则抛出 `ReferenceError{:.entity.name}`。如果是一个取声明操作，则在最外层作用域上声明该标志，即所谓的*全局变量污染*（但在严格模式下会抛出 `ReferenceError{:.entity.name}`）。
+
+## 原型和构造函数
+
+[**`this{:.constant}`**]() 关键字的值取决于函数被调用的位置和方式。对于直接的 `f(){:js}` 来说，其 `this{:js}` 是 `globalThis{:js}`。对于 `far.near.f(){:js}` 来说，其 `this{:js}` 是 `near{:js}`。对于 `f.call(ctx){:js}` 或 `f.apply(ctx){:js}` 和 `f.bind(ctx)(){:js}`来说，严格模式下其 `this{:js}` 是 `ctx{:js}`；正常模式下其 `this{:js}` 是 `ctx ?? globalThis{:js}`，如果 `ctx{:js}` 是原始值，还会被包装成对象。对于 `new f(){:js}` 或 `new obj.f.bind({}){:js}` 来说，其 `this{:js}` 是一个新对象 `{ [[Prototype]]: f.prototype ?? Object.prototype }{:js}`。
+
+[**`new{:js}`**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new) 关键字。虽然 `new f(){:js}` 中的 `this{:js}` 是新对象，但该表达式的返回值并不一定等于该对象。特例就是 `f(){:js}` 函数明确地将返回值置为一个对象（或者说非原始值）。函数可以通过 [`new.target{:js}`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target) 元属性来检测自己是被直接调用还是通过 `new{:js}` 构造。在类的构造函数中，`new.target{:js}` 等于 `new{:js}` 声明紧随的构造函数；普通函数调用的 `new.target{:js}` 等于 `undefined{:js}`；普通函数构造的 `new.target{:js}` 等于函数本身；箭头函数的 `new.target{:js}` 等于外层的 `new.target{:js}`； [`Reflect.construct(target, argumentsList, newTarget){:js}`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)的  `new.target{:js}` 等于 `newTarget ?? target{:js}`；静态初始化块中的 `new.target{:js}` 等于 `undefined{:js}`。
+
+**原型链**<sup>[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain)</sup>
+是一种属性查找机制。原型<sup>[Prototype](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes)</sup> 保存在对象的内置属性 `[[Prototype]]{:js}` 上，所谓内置属性即无法在 JS 中通过属性访问器访问的属性（`__proto__{:js}` 是被浏览器广泛支持但非标准的读写属性）。标准提供了 [`Object.getPrototypeOf(target){:js}`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf) 来获取某个对象的原型。通过字面量创建的对象的原型是 `Object.prototype{:js}`；`Object.prototype{:js}` 的原型是 `null{:js}`；通过 `Object.create(proto){:js}` 创建的对象的原型是 `proto{:js}`；通过 `new f(){:js}` 创建的对象原型是 `f.prototype{:js}`。[**属性访问器**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors) `.{:js}` 符号和 `[]{:js}` 符号，以及 `in{:js}` 操作符和 [`for...in{:.keyword}`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in) 循环都会深入原型链，按照原型链由外向内地顺序进行查找。而 `Object.prototype.hasOwnProperty(name){:js}` 、`Object.keys(target){:js}` 等内置方法不会深入原型链，只会在对象本身上进行查找。
+
+[**垃圾回收**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management#garbage_collection) 机制主要依赖引用的概念。一个对象如果有访问另一个对象（包括函数作用域）的权限，就叫做该对象引用了另一个对象。函数外部无法直接访问函数内部的作用域，但如果父函数返回了一个子函数给外部，且该子函数使用了父函数的作用域，则外部每次调用该子函数时相当于间接使用了父函数的作用域，这种使用模式叫做[**闭包**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)。闭包保持了对某个局部作用域的引用，以至于该作用域不能被垃圾回收机制释放。最初的垃圾回收算法通过[**引用计数**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management#reference-counting_garbage_collection)实现，但它无法解决循环引用的问题。现代浏览器使用的是[**标记清除**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management#mark-and-sweep_algorithm)算法，所有无法从根对象查询到的对象都将被清除。
+
+## 数据类型和类型转换
+
+### 显示类型转换
+
+### 隐式类型转换
+
+隐式类型转换<sup>[W3C](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-abstract-operations)</sup> 指的是对不同数据类型进行 `+ - < <= > >={:.keyword}` 等操作时默认进行的临时转换。
+- `+{:js}` 加法操作符：任意一边是字符串，则不是字符串一边转换为字符串进行拼接；如果有一边是 `BigInt{:.entity.name}` 则另一边也必须是 `BigInt{:.entity.name}` 否则抛出错误；其它情况，都转换为数值进行相加。
+
+| 类型  | 值                               | toString          | toNumber | toBoolean |
+| --- | ------------------------------- | ----------------- | -------- | --------- |
+|     | `true{:js}`                            | `"true"{:js}`            | `1{:js}`        | `true{:js}`      |
+|     | `false{:js}`                           | `"false"{:js}`           | `0{:js}`        | `false{:js}`     |
+|     | `undefined{:js}`                       | `"undefined"{:js}`       | `NaN{:js}`      | `false{:js}`     |
+|     | `null{:js}`                            | `"null"{:js}`            | `0{:js}`        | `false{:js}`     |
+|     | `0{:js}`                               | `"0"{:js}`               | `0{:js}`        | `false{:js}`     |
+|     | `123{:js}`                             | `"123"{:js}`             | `123{:js}`      | `true{:js}`      |
+|     | `Infinity{:js}`                        | `"Infinity"{:js}`        | `Infinity{:js}` | `true{:js}`      |
+|     | `NaN{:js}`                             | `"NaN"{:js}`             | `NaN{:js}`      | `false{:js}`     |
+|     | `""{:js}`                              | `""{:js}`                | `0{:js}`        | `false{:js}`     |
+|     | `"123"{:js}`                           | `"123"{:js}`             | `123{:js}`      | `true{:js}`      |
+|     | `"123abc"{:js}`                        | `"123abc"{:js}`          | `NaN{:js}`      | `true{:js}`      |
+|     | `{}{:js}`                              | `"[object object]"{:js}` | `NaN{:js}`      | `true{:js}`      |
+|     | `function(){}{:js}`                   | `"function(){}"{:js}`    | `NaN{:js}`      | `true{:js}`      |
+|     | `[]{:js}`                              | `""{:js}`                | `0{:js}`        | `true{:js}`      |
+|     | `["123"]{:js}`                         | `"123"{:js}`             | `123{:js}`      | `true{:js}`      |
+|     | `["123",undefined,null,"abc"]{:js}` | `"123,,,abc"{:js}`       | `NaN{:js}`      | `true{:js}`      |
+
+在上面的原型链中阐述了几乎所有对象的原型都至少指向 `Object.prototype`
+
+## 引用和垃圾回收机制
+
+## 事件循环
+
+## 内置对象
+
+## HTML
+## CSS
+## DOM
+## HTTP
+## Web API
+## Web 安全
+## Chrome Devtools
+

@@ -9,19 +9,36 @@ export const mdx = style({
 });
 
 globalStyle(`${mdx} p code`, {
-  background: vars.inlineCodeBackground,
-  boxShadow: `0 0 0 1px ${vars.inlineCodeBorderColor}`,
-  padding: `1px 6px`,
-  borderRadius: 4,
+  color: vars.inlineCodeTextColor,
+  // background: vars.inlineCodeBackground,
+  // boxShadow: `0 0 0 1px ${vars.inlineCodeBorderColor}`,
+  // padding: `1px 6px`,
+  // borderRadius: 4,
 });
 
+// globalStyle(`${mdx} a, ${mdx} a code`, {
+//   color: vars.linkColor,
+// });
+
 globalStyle(`${mdx} a`, {
-  color: vars.linkColor,
+  textDecoration: 'underline',
+  textDecorationColor: vars.linkColor,
 });
 
 globalStyle(`${mdx} a:hover`, {
-  color: vars.linkHoverColor,
-  textDecoration: 'underline',
+  // color: vars.linkHoverColor,
+  // textDecoration: 'underline',
+  textDecorationColor: vars.linkColor,
+  textDecorationThickness: 2,
+});
+
+globalStyle(`${mdx} table`, {
+  borderCollapse: 'collapse',
+});
+
+globalStyle(`${mdx} th, td`, {
+  border: `1px solid ${vars.defaultBorderColor}`,
+  padding: `4px 12px`,
 });
 
 globalStyle(`${mdx} :is(h1, h2, h3, h4, h5, h6)`, {

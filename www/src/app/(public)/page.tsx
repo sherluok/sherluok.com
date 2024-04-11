@@ -27,6 +27,9 @@ export default async function HomePage() {
             <div className={s.groupTitle}>Posts...</div>
           </div>
           <ul className={s.groupItemList}>
+            <li className={s.groupItem}>
+              <Link className={s.link} href={`/post/unknown-web-tec`}>Unknown Web Tec</Link>
+            </li>
             {posts.map(({ id, title }) => (
               <li className={s.groupItem} key={id}>
                 <Link className={s.link} href={`/post/${id}`}>{title}</Link>

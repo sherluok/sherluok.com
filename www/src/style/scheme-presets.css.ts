@@ -37,6 +37,7 @@ export const LIGHT_SCHEME = {
   [vars.selectionTextColor]: 'hsl(40 16% 92%)',
   [vars.selectionBackground]: 'hsl(40 16% 32%)',
 
+  [vars.inlineCodeTextColor]: `hsl(50 100% 30%)`,
   [vars.inlineCodeBackground]: `hsl(50 8% 88%)`,
   [vars.inlineCodeBorderColor]: `hsl(50 8% 88%)`,
   [vars.blockCodeBackground]: `hsl(50 8% 88%)`,
@@ -52,7 +53,7 @@ export const DARK_SCHEME = {
   [vars.editorBackground]: `hsl(50 8% 6%)`,
   [vars.hoverBackground]: `hsl(50 12% 20%)`,
 
-  [vars.primaryTextColor]: `hsl(50 12% 72%)`,
+  [vars.primaryTextColor]: `hsl(50 8% 80%)`,
   [vars.secondaryTextColor]: `hsl(50 10% 60%)`,
   [vars.placeholderTextColor]: `hsl(50 8% 48%)`,
 
@@ -63,6 +64,7 @@ export const DARK_SCHEME = {
   [vars.selectionTextColor]: 'hsl(40 16% 92%)',
   [vars.selectionBackground]: 'hsl(40 16% 32%)',
 
+  [vars.inlineCodeTextColor]: `hsl(50 30% 72%)`,
   [vars.inlineCodeBackground]: `hsl(50 6% 16%)`,
   [vars.inlineCodeBorderColor]: `hsl(50 12% 4%)`,
   [vars.blockCodeBackground]: `hsl(50 8% 8%)`,
