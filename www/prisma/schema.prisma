@@ -117,7 +117,7 @@ model Blob {
   url                String
   downloadUrl        String
   pathname           String
-  contentType        String
+  contentType        String?
   contentDisposition String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

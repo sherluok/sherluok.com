@@ -3,6 +3,7 @@
 - [Cloudflare]()
   - [Deploy Next.js using Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-nextjs-site/)
   - [@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages/tree/main/packages/next-on-pages)
+  - [](https://vercel.com/docs/integrations/cloudflare)
 
 - [NextJS](https://nextjs.org/)
   - [Install](https://nextjs.org/docs/getting-started/installation#manual-installation)

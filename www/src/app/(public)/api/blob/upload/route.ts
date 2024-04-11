@@ -60,7 +60,11 @@ export async function POST(request: Request): Promise<NextResponse> {
           await prisma.blob.create({
             data: {
               ...blob,
-              uploadedByUserId: userId,
+              uploadedBy: {
+                connect: {
+                  id: userId,
+                },
+              }
             },
           });
 
